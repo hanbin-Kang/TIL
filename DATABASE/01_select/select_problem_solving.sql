@@ -1,0 +1,66 @@
+-- 1. 이름이 S로 끝나는 사원 출력
+SELECT *
+FROM EMP
+WHERE ENAME LIKE '%S';
+
+-- 2. 30번부서에 근무하고 있는 직원 중 직책이 SALESMAN인 사원의 사원 번호, 이름, 직책, 급여, 부서 번호
+SELECT EMPNO, ENAME, JOB, SAL, DEPTNO
+FROM EMP
+WHERE DEPTNO = 30
+AND JOB = 'SALESMAN';
+
+-- 3. 20번 30번 부서에 근무하고 있는 사원중 급여가 2000 초과
+-- 1) 집합 연산자 x
+SELECT *
+FROM EMP
+WHERE (DEPTNO = 20
+    OR DEPTNO = 30)
+AND SAL > 2000;
+
+-- 2) 집합 연산자 o
+SELECT *
+FROM EMP
+WHERE DEPTNO = 20
+AND SAL > 2000
+
+UNION
+
+SELECT *
+FROM EMP
+WHERE DEPTNO = 30
+AND SAL > 2000;
+
+-- 4. 급여가 2000 이상 3000이하의 범위 이외의 값을 가진 데이터 출력
+-- 1) NOT BETWEEN A AND B를 사용 x
+SELECT *
+FROM EMP
+WHERE SAL < 2000
+OR SAL > 3000;
+
+-- 2) NOT BETWEEN A AND B를 사용
+SELECT *
+FROM EMP
+WHERE SAL NOT BETWEEN 2000 AND 3000;
+
+-- 5. 사원 이름에 E가 포함되어 있는 30번 부서 사원 중 급여가 1000 ~ 2000 사이가 아닌 사원 이름, 사원번호, 급여, 부서번호
+SELECT ENAME, EMPNO, SAL, DEPTNO
+FROM EMP
+WHERE DEPTNO = 30
+AND ENAME LIKE '%E%'
+AND SAL NOT BETWEEN 1000 AND 2000;
+
+-- 6. 추가수당 x, 상급자 o, 직책이 MANAGER, CLERK인 사원 중 사원 이름의 두번째 글자가 L이 아닌 사원
+SELECT *
+FROM EMP
+WHERE COMM IS NULL
+AND MGR IS NOT NULL
+AND (JOB = 'MANAGER' 
+OR JOB = 'CLERK')
+AND ENAME NOT LIKE '_L%';
+-- 수정 : IN 연산자를 사용하는것이 더 깔끔하다
+SELECT *
+FROM EMP
+WHERE COMM IS NULL
+AND MGR IS NOT NULL
+AND JOB IN ('MANAGER', 'CLERK')
+AND ENAME NOT LIKE '_L%';
