@@ -105,6 +105,23 @@ SELECT EMPNO, '[' || SUBSTR(ENAME, 1, 1) || ']' || RPAD(SUBSTR(ENAME, 1, 1), LEN
 FROM EMP
 WHERE UPPER(ENAME) LIKE '%S%';
 -- ------------------------------------------------------------------------------------------
+-- 문제 17 : 이름 + 직책 종합 마스킹, 직책에 A가 포함된 사원만
+-- EMPNO   RESULT
+------  -----------------------------------------------
+-- 7499    [A] ALLEN | JOB:S******* | A_POS:2 | LEN:5
+SELECT EMPNO, '['|| SUBSTR(ENAME, 1, 1)  || '] | ' || 'JOB:' || RPAD(SUBSTR(JOB, 1, 1), LENGTH(JOB), '*')   
+       || ' | A_POS:' || INSTR(JOB, 'A') || ' | LEN:' || LENGTH(JOB) AS "RESULT"
+FROM EMP
+WHERE UPPER(JOB) LIKE '%A%';
+-- ------------------------------------------------------------------------------------------
+-- 문제 18 : 이름 분리 + 위치 찾기 
+-- EMPNO   RESULT
+-- ------  --------------------------------
+-- 7369    SMI-TH | LAST:H | LEN:5
+SELECT EMPNO , SUBSTR(ENAME,1, 3) || '-' || SUBSTR(ENAME, 4) || ' | LAST:' || 
+       SUBSTR(ENAME, LENGTH(ENAME)) || ' | LEN:' || LENGTH(ENAME) AS "RESULT"
+FROM EMP;
+-- ------------------------------------------------------------------------------------------
 -- 틀린 문제 
 -- (1) 3번
 SELECT RPAD(SUBSTR(ENAME, 1, 1), LENGTH(ENAME), '*')
