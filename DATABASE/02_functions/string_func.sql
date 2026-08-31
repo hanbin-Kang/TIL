@@ -77,3 +77,17 @@ SELECT EMPNO || ENAME,
        EMPNO || (' : ' || ENAME)
 FROM EMP
 WHERE LOWER(ENAME) = 'scott';
+
+-- TRIM
+SELECT '[' || TRIM('_' FROM '_ _Oracle_ _') || ']' AS TRIM, -- 앞뒤 다 제거
+       '[' || TRIM(LEADING '_' FROM '_ _Oracle_ _') || ']' AS TRIM_LEADING, -- LEADING : 선두의 
+       '[' || TRIM(TRAILING '_' FROM '_ _Oracle_ _') || ']' AS TRIM_TRAILING, -- TRAILING : 뒤쪽의
+       '[' || TRIM(BOTH '_' FROM '_ _Oracle_ _') || ']' AS TRIM_BOTH -- 기본값과 같이 앞뒤 다 제거
+FROM DUAL;
+
+-- LTRIM, RTRIM
+SELECT '[' || LTRIM(' _Oracle_ ') || ']' AS LTRIM,
+       '[' || LTRIM('<_Oracle_>', '_<') || ']' AS LTRIM_2, -- '_<' 이라는 문자열을 삭제하는게 아닌 각각의 문자를 삭제하는 것
+       '[' || RTRIM(' _Oracle_ ') || ']' AS RTRIM,
+       '[' || RTRIM('<_Oracle_>', '>_') || ']' AS RTRIM_2  -- '>_' 이라는 문자열을 삭제하는게 아닌 각각의 문자를 삭제하는 것
+FROM DUAL;
