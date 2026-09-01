@@ -55,3 +55,14 @@ WHERE DEPTNO = 30;
 SELECT AVG(DISTINCT(SAL)) AS "부서 번호가 30인 사원들의 중복을 제거한 평균 급여"
 FROM EMP
 WHERE DEPTNO = 30;
+
+-- EMP 테이블에서 급여가 1500 이상인 사원들의 급여 합계 평균 급여 최고 급여 최저 급여
+SELECT SUM(SAL), AVG(SAL), MAX(SAL), MIN(SAL)
+FROM EMP
+WHERE SAL >= 1500;
+
+-- EMP 테이블에서 ENAME에 A가 포함된 사원들의 급여를 대상으로 다음을 구하시오.
+-- 해당 사원 수/급여 합계/평균 급여/최고 급여/최저 급여
+SELECT COUNT(*), SUM(SAL), AVG(SAL), MAX(SAL), MIN(SAL)
+FROM EMP
+WHERE UPPER(ENAME) LIKE '%A%';
