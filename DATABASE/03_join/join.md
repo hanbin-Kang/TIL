@@ -532,3 +532,346 @@ ON TABLE1.COL = TABLE2.COL
 ```
 
 즉, **`JOIN ... ON`을 중심으로 익히고 `LEFT JOIN`까지 확실하게 이해하는 것이 중요하다.**
+
+# 여러 JOIN에서 LEFT JOIN 이해하기
+
+## 1. LEFT JOIN 기본 원리
+
+```sql
+A LEFT JOIN B
+```
+
+→ **왼쪽 테이블 A의 모든 행을 살린다.**
+
+B에서 일치하는 데이터가 있으면 붙이고,
+일치하는 데이터가 없으면 B의 컬럼은 `NULL`이 된다.
+
+---
+
+## 2. 간단한 예시
+
+### A 테이블
+
+| ID | NAME |
+| -: | ---- |
+|  1 | 철수   |
+|  2 | 영희   |
+|  3 | 민수   |
+
+### B 테이블
+
+| ID | JOB  |
+| -: | ---- |
+|  2 | 개발자  |
+|  3 | 디자이너 |
+|  4 | 기획자  |
+
+```sql
+SELECT *
+FROM A
+LEFT JOIN B
+    ON A.ID = B.ID;
+```
+
+### 결과
+
+| ID | NAME | JOB  |
+| -: | ---- | ---- |
+|  1 | 철수   | NULL |
+|  2 | 영희   | 개발자  |
+|  3 | 민수   | 디자이너 |
+
+→ A가 왼쪽이므로 **A의 모든 행을 살린다.**
+
+* A의 ID 1 → B에 없지만 살아있음
+* A의 ID 2 → B의 개발자 정보가 붙음
+* A의 ID 3 → B의 디자이너 정보가 붙음
+* B의 ID 4 → 오른쪽 테이블이므로 살리지 않음
+
+---
+
+# 3. JOIN을 여러 개 사용하는 경우
+
+다음과 같은 SQL이 있다고 하자.
+
+```sql
+FROM DEPT D
+LEFT JOIN EMP E
+    ON D.DEPTNO = E.DEPTNO
+
+LEFT JOIN SALGRADE S
+    ON E.SAL BETWEEN S.LOSAL AND S.HISAL
+
+LEFT JOIN EMP E2
+    ON E.MGR = E2.EMPNO
+```
+
+이것을 **한 번에 생각하면 안 된다.**
+
+각 JOIN을 단계별로 생각한다.
+
+---
+
+## 4. 첫 번째 JOIN
+
+```sql
+FROM DEPT D
+LEFT JOIN EMP E
+    ON D.DEPTNO = E.DEPTNO
+```
+
+→ 왼쪽인 `DEPT`를 전부 살린다.
+
+예를 들어 DEPT가 다음과 같다고 하자.
+
+### DEPT
+
+| DEPTNO | DNAME      |
+| -----: | ---------- |
+|     10 | ACCOUNTING |
+|     20 | RESEARCH   |
+|     30 | SALES      |
+|     40 | OPERATIONS |
+
+EMP에는 40번 부서의 사원이 없다고 하자.
+
+### EMP
+
+| EMPNO | ENAME | DEPTNO |  SAL |
+| ----: | ----- | -----: | ---: |
+|  7369 | SMITH |     20 |  800 |
+|  7499 | ALLEN |     30 | 1600 |
+|  7782 | CLARK |     10 | 2450 |
+
+```sql
+FROM DEPT D
+LEFT JOIN EMP E
+    ON D.DEPTNO = E.DEPTNO
+```
+
+### 결과
+
+| DEPTNO | DNAME      | EMPNO | ENAME |
+| -----: | ---------- | ----: | ----- |
+|     10 | ACCOUNTING |  7782 | CLARK |
+|     20 | RESEARCH   |  7369 | SMITH |
+|     30 | SALES      |  7499 | ALLEN |
+|     40 | OPERATIONS |  NULL | NULL  |
+
+→ `DEPT`가 왼쪽이므로 **DEPT 40도 살아있다.**
+
+현재 결과는:
+
+```text
+DEPT + EMP
+```
+
+---
+
+# 5. 두 번째 JOIN
+
+이제 `SALGRADE`를 붙인다.
+
+```sql
+LEFT JOIN SALGRADE S
+    ON E.SAL BETWEEN S.LOSAL AND S.HISAL
+```
+
+여기서 중요한 점:
+
+**왼쪽은 이제 단순히 DEPT가 아니다.**
+
+첫 번째 JOIN으로 만들어진
+
+```text
+(DEPT + EMP)
+```
+
+전체가 왼쪽이다.
+
+즉:
+
+```text
+(DEPT + EMP) LEFT JOIN SALGRADE
+```
+
+라고 생각한다.
+
+예를 들어:
+
+### SALGRADE
+
+| GRADE | LOSAL | HISAL |
+| ----: | ----: | ----: |
+|     1 |   700 |  1200 |
+|     2 |  1201 |  1400 |
+|     3 |  1401 |  2000 |
+|     4 |  2001 |  3000 |
+
+급여가 1600이면:
+
+```text
+1401 <= 1600 <= 2000
+```
+
+이므로 `GRADE = 3`.
+
+따라서:
+
+```text
+(DEPT + EMP) + SALGRADE
+```
+
+형태가 된다.
+
+그리고 DEPT 40처럼 EMP가 없는 행은 기존 결과에서 이미 살아있으므로 계속 살아있다.
+
+---
+
+# 6. 세 번째 JOIN
+
+이번에는 EMP를 다시 JOIN한다.
+
+```sql
+LEFT JOIN EMP E2
+    ON E.MGR = E2.EMPNO
+```
+
+여기서 `E2`는 **관리자 역할의 EMP**이다.
+
+```text
+E  = 현재 사원
+E2 = 관리자
+```
+
+예를 들어:
+
+### EMP
+
+| EMPNO | ENAME |  MGR |
+| ----: | ----- | ---: |
+|  7499 | ALLEN | 7698 |
+|  7698 | BLAKE | 7839 |
+|  7839 | KING  | NULL |
+
+ALLEN의 경우:
+
+```text
+E.EMPNO = 7499
+E.MGR   = 7698
+```
+
+`E2.EMPNO = 7698`인 사원을 찾는다.
+
+→ BLAKE
+
+따라서:
+
+```text
+ALLEN | 관리자: BLAKE
+```
+
+가 된다.
+
+---
+
+## 7. 관리자가 없는 경우
+
+KING을 보면:
+
+```text
+E.EMPNO = 7839
+E.MGR   = NULL
+```
+
+관리자가 없다.
+
+하지만:
+
+```sql
+LEFT JOIN EMP E2
+```
+
+이므로 **현재 사원 KING은 살려야 한다.**
+
+따라서:
+
+| EMPNO | ENAME | MGR_ENAME |
+| ----: | ----- | --------- |
+|  7839 | KING  | NULL      |
+
+이 된다.
+
+---
+
+# 8. 전체 과정을 한 번에 보기
+
+```sql
+FROM DEPT D
+LEFT JOIN EMP E
+    ON D.DEPTNO = E.DEPTNO
+
+LEFT JOIN SALGRADE S
+    ON E.SAL BETWEEN S.LOSAL AND S.HISAL
+
+LEFT JOIN EMP E2
+    ON E.MGR = E2.EMPNO
+```
+
+실제로는 다음과 같이 생각한다.
+
+```text
+① DEPT
+      ↓
+   LEFT JOIN EMP
+      ↓
+② DEPT + EMP
+      ↓
+   LEFT JOIN SALGRADE
+      ↓
+③ DEPT + EMP + SALGRADE
+      ↓
+   LEFT JOIN EMP E2
+      ↓
+④ DEPT + EMP + SALGRADE + 관리자
+```
+
+각 단계에서 `LEFT JOIN`을 사용했으므로:
+
+```text
+① DEPT를 전부 살림
+        ↓
+② 그 결과를 전부 살리면서 SALGRADE 추가
+        ↓
+③ 그 결과를 전부 살리면서 관리자 정보 추가
+```
+
+---
+
+# 9. 핵심
+
+여러 개의 JOIN을 사용할 때도 LEFT JOIN의 의미는 변하지 않는다.
+
+```text
+LEFT JOIN
+→ 왼쪽을 전부 살린다.
+```
+
+다만 JOIN이 여러 개라면 **현재 JOIN에서 왼쪽에 있는 것은 무엇인지** 생각해야 한다.
+
+```text
+DEPT LEFT JOIN EMP
+→ DEPT를 전부 살림
+
+(DEPT + EMP) LEFT JOIN SALGRADE
+→ 지금까지의 결과를 전부 살림
+
+(DEPT + EMP + SALGRADE) LEFT JOIN EMP E2
+→ 지금까지의 결과를 전부 살림
+```
+
+따라서 여러 JOIN을 볼 때는
+
+> **"이 JOIN의 왼쪽에는 지금 무엇이 있는가?"**
+
+를 생각하면 된다.
