@@ -121,3 +121,37 @@ WHERE SAL < (SELECT AVG(SAL)
              WHERE DEPTNO = 70);
 SELECT COUNT(*) FROM CHAP10HW_EMP;
 -- 시작전 : 14, 한 후 : 7
+
+-- 30번 부서에서 근무하는 사원 중, 해당 부서의 평균 급여보다 적게 받는 사원들의 급여를 10% 인상하시오.
+-- 새로운 테이블 하나 만들기
+CREATE TABLE NEW_EMP
+AS SELECT * FROM EMP;
+-- 30번 부서의 평균 급여 구하기
+SELECT AVG(SAL)
+FROM NEW_EMP
+WHERE DEPTNO = 30;
+-- 이 평균보다 작은 사원의 급여 10% 인상
+UPDATE NEW_EMP
+SET SAL = SAL * 1.1
+WHERE SAL < (SELECT AVG(SAL)
+             FROM NEW_EMP
+             WHERE DEPTNO = 30)
+AND DEPTNO = 30;
+-- UPDATE에서 SET은 무엇을 변경할 것인가, WHERE은 누구를 변경할것인가 
+
+-- 20번 부서에서 근무하는 사원 중, 20번 부서의 평균 급여보다 적게 받으면서 직책이 CLERK인 사원들의 급여를, 자기 부서(20번)의 평균 급여로 변경하시오.
+-- 20번 부서의 평균 급여
+SELECT AVG(SAL)
+FROM NEW_EMP
+WHERE DEPTNO = 20;
+
+-- 평균보다 적은 사람 중 JOB = 'CLERK'인 사람의 급여를 평균 급여로 변경
+UPDATE NEW_EMP
+SET SAL = (SELECT AVG(SAL)
+           FROM NEW_EMP
+           WHERE DEPTNO = 20)
+WHERE DEPTNO = 20
+AND JOB = 'CLERK'
+AND SAL < (SELECT AVG(SAL)
+           FROM NEW_EMP
+           WHERE DEPTNO = 20);
