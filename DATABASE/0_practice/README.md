@@ -24,4 +24,4 @@
 
 ### 풀이
 
-[1번 문제 풀이 보기](./01_restaurant_info_max_favorites.sql)
+[1번 문제 풀이 보기](./solve/01_restaurant_info_max_favorites.sql)
