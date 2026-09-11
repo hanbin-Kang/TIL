@@ -23,9 +23,9 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ```text
 0_practice/
 ├── solve/                       
-├── 01_...
-├── 02_...
-├── 03_...
+|     └── 01_ ...
+|     └── 02_ ...
+|     └── 03_ ...
 └── README.md
 ```
 
@@ -54,3 +54,45 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [1번 문제 풀이 보기](./solve/01_restaurant_info_max_favorites.sql)
+
+----
+----
+
+### 02. 중고 거래 게시물을 3건 이상 등록한 사용자
+
+### USED_GOODS_BOARD 테이블
+
+| 컬럼명 | 타입 | NULL 허용 | 설명 |
+|---|---|---|---|
+| `BOARD_ID` | VARCHAR(5) | ❌ | 게시글 ID |
+| `WRITER_ID` | VARCHAR(50) | ❌ | 작성자 ID |
+| `TITLE` | VARCHAR(100) | ❌ | 게시글 제목 |
+| `CONTENTS` | VARCHAR(1000) | ❌ | 게시글 내용 |
+| `PRICE` | NUMBER | ❌ | 가격 |
+| `CREATED_DATE` | DATE | ❌ | 작성일 |
+| `STATUS` | VARCHAR(10) | ❌ | 거래상태 |
+| `VIEWS` | NUMBER | ❌ | 조회수 |
+
+### USED_GOODS_USER 테이블
+
+| 컬럼명 | 타입 | NULL 허용 | 설명 |
+|---|---|---|---|
+| `USER_ID` | VARCHAR(50) | ❌ | 회원 ID |
+| `NICKNAME` | VARCHAR(100) | ❌ | 닉네임 |
+| `CITY` | VARCHAR(100) | ❌ | 시 |
+| `STREET_ADDRESS1` | VARCHAR(100) | ❌ | 도로명 주소 |
+| `STREET_ADDRESS2` | VARCHAR(100) | ⭕ | 상세 주소 |
+| `TLNO` | VARCHAR(20) | ❌ | 전화번호 |
+
+## 문제
+
+`USED_GOODS_BOARD`와 `USED_GOODS_USER` 테이블에서 **중고 거래 게시물을 3건 이상 등록한 사용자**의 사용자 ID, 닉네임, 전체주소, 전화번호를 조회합니다.
+
+- 게시글을 3건 이상 등록한 사용자 조회
+- 전체 주소는 시, 도로명 주소, 상세 주소를 포함
+- 전화번호는 `xxx-xxxx-xxxx` 형태로 출력
+- 회원 ID를 기준으로 내림차순 정렬
+
+### 풀이
+
+[2번 문제 풀이 보기](./solve/02_users_with_3_or_more_posts.sql)
