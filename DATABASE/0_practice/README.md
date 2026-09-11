@@ -29,7 +29,7 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 └── README.md
 ```
 
-### 01. 음식 종류별 즐겨찾기수가 가장 많은 식당
+### [01. 음식 종류별 즐겨찾기수가 가장 많은 식당]
 
 ### REST_INFO 테이블
 
@@ -58,7 +58,7 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ----
 ----
 
-### 02. 중고 거래 게시물을 3건 이상 등록한 사용자
+### [02. 중고 거래 게시물을 3건 이상 등록한 사용자]
 
 ### USED_GOODS_BOARD 테이블
 
@@ -96,3 +96,85 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [2번 문제 풀이 보기](./solve/02_users_with_3_or_more_posts.sql)
+
+----
+----
+
+### [03. 완료된 중고 거래 총금액이 70만 원 이상인 사용자]
+
+### USED_GOODS_BOARD 테이블
+
+| 컬럼명            | 타입            | NULL 허용 | 설명     |
+| -------------- | ------------- | ------- | ------ |
+| `BOARD_ID`     | VARCHAR(5)    | ❌       | 게시글 ID |
+| `WRITER_ID`    | VARCHAR(50)   | ❌       | 작성자 ID |
+| `TITLE`        | VARCHAR(100)  | ❌       | 게시글 제목 |
+| `CONTENTS`     | VARCHAR(1000) | ❌       | 게시글 내용 |
+| `PRICE`        | NUMBER        | ❌       | 가격     |
+| `CREATED_DATE` | DATE          | ❌       | 작성일    |
+| `STATUS`       | VARCHAR(10)   | ❌       | 거래상태   |
+| `VIEWS`        | NUMBER        | ❌       | 조회수    |
+
+### USED_GOODS_USER 테이블
+
+| 컬럼명               | 타입           | NULL 허용 | 설명     |
+| ----------------- | ------------ | ------- | ------ |
+| `USER_ID`         | VARCHAR(50)  | ❌       | 회원 ID  |
+| `NICKNAME`        | VARCHAR(100) | ❌       | 닉네임    |
+| `CITY`            | VARCHAR(100) | ❌       | 시      |
+| `STREET_ADDRESS1` | VARCHAR(100) | ❌       | 도로명 주소 |
+| `STREET_ADDRESS2` | VARCHAR(100) | ⭕       | 상세 주소  |
+| `TLNO`            | VARCHAR(20)  | ❌       | 전화번호   |
+
+## 문제
+
+`USED_GOODS_BOARD`와 `USED_GOODS_USER` 테이블에서 **완료된 중고 거래의 총금액이 70만 원 이상인 사용자**의 사용자 ID, 닉네임, 총거래금액을 조회합니다.
+
+* 거래 상태가 `DONE`인 게시글만 조회
+* 사용자별 완료된 거래금액을 합산
+* 총거래금액이 70만 원 이상인 사용자 조회
+* 총거래금액을 기준으로 오름차순 정렬
+
+### 풀이
+
+[3번 문제 풀이 보기](./solve/03_users_with_700k_or_more_total_sales.sql)
+
+----
+----
+
+**### 04. 2022년 1월 카테고리별 도서 판매량**
+
+**### BOOK 테이블**
+
+| 컬럼명              | 타입         | NULL 허용 | 설명    |
+| ---------------- | ---------- | ------- | ----- |
+| `BOOK_ID`        | INTEGER    | ❌       | 도서 ID |
+| `CATEGORY`       | VARCHAR(N) | ❌       | 카테고리  |
+| `AUTHOR_ID`      | INTEGER    | ❌       | 저자 ID |
+| `PRICE`          | INTEGER    | ❌       | 판매가   |
+| `PUBLISHED_DATE` | DATE       | ❌       | 출판일   |
+
+**### BOOK_SALES 테이블**
+
+| 컬럼명          | 타입      | NULL 허용 | 설명    |
+| ------------ | ------- | ------- | ----- |
+| `BOOK_ID`    | INTEGER | ❌       | 도서 ID |
+| `SALES_DATE` | DATE    | ❌       | 판매일   |
+| `SALES`      | INTEGER | ❌       | 판매량   |
+
+**## 문제**
+
+`BOOK`과 `BOOK_SALES` 테이블에서 **2022년 1월의 카테고리별 도서 판매량을 합산**하여 카테고리와 총 판매량을 조회합니다.
+
+* `BOOK`과 `BOOK_SALES`를 `BOOK_ID` 기준으로 JOIN
+* 2022년 1월에 판매된 도서만 조회
+* 카테고리별 판매량 합산
+* 카테고리명을 기준으로 오름차순 정렬
+
+**### 풀이**
+
+[4번 문제 풀이 보기](./solve/04_category_sales_in_january_2022.sql)
+
+---
+---
+
