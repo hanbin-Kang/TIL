@@ -178,3 +178,31 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ---
 ---
 
+### 05. 2022년 5월 1일 기준 출고여부 조회
+
+### FOOD_ORDER 테이블
+
+| 컬럼명            | 타입          | NULL 허용 | 설명    |
+| -------------- | ----------- | ------- | ----- |
+| `ORDER_ID`     | VARCHAR(10) | ❌       | 주문 ID |
+| `PRODUCT_ID`   | VARCHAR(5)  | ❌       | 제품 ID |
+| `AMOUNT`       | NUMBER      | ❌       | 주문량   |
+| `PRODUCE_DATE` | DATE        | ⭕       | 생산일자  |
+| `IN_DATE`      | DATE        | ⭕       | 입고일자  |
+| `OUT_DATE`     | DATE        | ⭕       | 출고일자  |
+| `FACTORY_ID`   | VARCHAR(10) | ❌       | 공장 ID |
+| `WAREHOUSE_ID` | VARCHAR(10) | ❌       | 창고 ID |
+
+## 문제
+
+`FOOD_ORDER` 테이블에서 **2022년 5월 1일을 기준으로 주문 ID, 제품 ID, 출고일자, 출고여부**를 조회합니다.
+
+* 2022년 5월 1일까지 출고된 경우 `출고완료`
+* 2022년 5월 1일 이후 출고 예정인 경우 `출고대기`
+* 출고일자가 `NULL`인 경우 `출고미정`
+* 출고일자는 `YYYY-MM-DD` 형태로 출력
+* 주문 ID를 기준으로 오름차순 정렬
+
+### 풀이
+
+[5번 문제 풀이 보기](./solve/05_food_order_shipping_status.sql)
