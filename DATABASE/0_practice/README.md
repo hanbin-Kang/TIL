@@ -326,3 +326,30 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [8번 문제 풀이 보기](./solve/08_animals_neutered_after_intake.sql)
+
+---
+---
+
+### [09. 식품분류별 가격이 가장 비싼 식품 조회]
+
+### FOOD_PRODUCT 테이블
+
+| 컬럼명            | 타입         | NULL 허용 | 설명    |
+| -------------- | ---------- | ------- | ----- |
+| `PRODUCT_ID`   | VARCHAR(N) | ❌       | 식품 ID |
+| `PRODUCT_NAME` | VARCHAR(N) | ❌       | 식품 이름 |
+| `PRODUCT_CD`   | VARCHAR(N) | ❌       | 식품 코드 |
+| `CATEGORY`     | VARCHAR(N) | ❌       | 식품 분류 |
+| `PRICE`        | NUMBER     | ❌       | 식품 가격 |
+
+## 문제
+
+`FOOD_PRODUCT` 테이블에서 **식품분류별로 가격이 가장 비싼 식품**의 분류, 가격, 이름을 조회합니다.
+
+* 식품분류가 `과자`, `국`, `김치`, `식용유`인 경우만 조회
+* 각 식품분류별 최고 가격 조회
+* 식품 가격을 기준으로 내림차순 정렬
+
+### 풀이
+
+[9번 문제 풀이 보기](./solve/09_category_max_price_food.sql)
