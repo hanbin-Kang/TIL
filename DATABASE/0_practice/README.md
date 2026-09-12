@@ -206,3 +206,45 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [5번 문제 풀이 보기](./solve/05_food_order_shipping_status.sql)
+
+---
+---
+
+### 06. 조회수가 가장 높은 게시물의 첨부파일 경로 조회
+
+### USED_GOODS_BOARD 테이블
+
+| 컬럼명            | 타입            | NULL 허용 | 설명     |
+| -------------- | ------------- | ------- | ------ |
+| `BOARD_ID`     | VARCHAR(5)    | ❌       | 게시글 ID |
+| `WRITER_ID`    | VARCHAR(50)   | ❌       | 작성자 ID |
+| `TITLE`        | VARCHAR(100)  | ❌       | 게시글 제목 |
+| `CONTENTS`     | VARCHAR(1000) | ❌       | 게시글 내용 |
+| `PRICE`        | NUMBER        | ❌       | 가격     |
+| `CREATED_DATE` | DATE          | ❌       | 작성일    |
+| `STATUS`       | VARCHAR(10)   | ❌       | 거래상태   |
+| `VIEWS`        | NUMBER        | ❌       | 조회수    |
+
+### USED_GOODS_FILE 테이블
+
+| 컬럼명         | 타입           | NULL 허용 | 설명     |
+| ----------- | ------------ | ------- | ------ |
+| `FILE_ID`   | VARCHAR(10)  | ❌       | 파일 ID  |
+| `FILE_EXT`  | VARCHAR(5)   | ❌       | 파일 확장자 |
+| `FILE_NAME` | VARCHAR(256) | ❌       | 파일 이름  |
+| `BOARD_ID`  | VARCHAR(10)  | ❌       | 게시글 ID |
+
+## 문제
+
+`USED_GOODS_BOARD`와 `USED_GOODS_FILE` 테이블에서 **조회수가 가장 높은 중고거래 게시물의 첨부파일 경로**를 조회합니다.
+
+* 조회수가 가장 높은 게시물 1개 조회
+* `BOARD_ID`를 기준으로 게시글과 첨부파일 정보를 JOIN
+* 기본 파일 경로는 `/home/grep/src/`
+* 게시글 ID를 디렉토리로 사용
+* 파일 경로는 `FILE_ID + FILE_NAME + FILE_EXT` 형태로 구성
+* `FILE_ID`를 기준으로 내림차순 정렬
+
+### 풀이
+
+[6번 문제 풀이 보기](./solve/06_used_goods_file_path.sql)
