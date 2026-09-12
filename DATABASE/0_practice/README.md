@@ -287,3 +287,42 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [7번 문제 풀이 보기](./solve/07_animals_without_intake_records.sql)
+
+---
+---
+
+### [08. 보호소 입소 후 중성화된 동물 조회]
+
+### ANIMAL_INS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물 ID       |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 보호 시작일      |
+| `INTAKE_CONDITION` | VARCHAR(N) | ❌       | 보호 시작 시 상태  |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_INTAKE`  | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+### ANIMAL_OUTS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물 ID       |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 입양일         |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_OUTCOME` | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+## 문제
+
+`ANIMAL_INS`와 `ANIMAL_OUTS` 테이블에서 **보호소에 들어올 당시에는 중성화되지 않았지만, 보호소를 나갈 당시에는 중성화된 동물**의 ID, 생물 종, 이름을 조회합니다.
+
+* `ANIMAL_INS`와 `ANIMAL_OUTS`를 `ANIMAL_ID` 기준으로 JOIN
+* 입소 당시 `Intact`인 동물 조회
+* 입양 당시 `Spayed` 또는 `Neutered`인 동물 조회
+* 동물 ID를 기준으로 오름차순 정렬
+
+### 풀이
+
+[8번 문제 풀이 보기](./solve/08_animals_neutered_after_intake.sql)
