@@ -353,3 +353,98 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [9번 문제 풀이 보기](./solve/09_category_max_price_food.sql)
+
+---
+---
+
+### [10. 2022년 5월 생산 식품의 총매출 조회]
+
+### FOOD_PRODUCT 테이블
+
+| 컬럼명            | 타입          | NULL 허용 | 설명    |
+| -------------- | ----------- | ------- | ----- |
+| `PRODUCT_ID`   | VARCHAR(10) | ❌       | 식품 ID |
+| `PRODUCT_NAME` | VARCHAR(50) | ❌       | 식품 이름 |
+| `PRODUCT_CD`   | VARCHAR(10) | ⭕       | 식품 코드 |
+| `CATEGORY`     | VARCHAR(10) | ⭕       | 식품 분류 |
+| `PRICE`        | NUMBER      | ⭕       | 식품 가격 |
+
+### FOOD_ORDER 테이블
+
+| 컬럼명            | 타입          | NULL 허용 | 설명    |
+| -------------- | ----------- | ------- | ----- |
+| `ORDER_ID`     | VARCHAR(10) | ❌       | 주문 ID |
+| `PRODUCT_ID`   | VARCHAR(5)  | ❌       | 식품 ID |
+| `AMOUNT`       | NUMBER      | ❌       | 주문량   |
+| `PRODUCE_DATE` | DATE        | ⭕       | 생산일자  |
+| `IN_DATE`      | DATE        | ⭕       | 입고일자  |
+| `OUT_DATE`     | DATE        | ⭕       | 출고일자  |
+| `FACTORY_ID`   | VARCHAR(10) | ❌       | 공장 ID |
+| `WAREHOUSE_ID` | VARCHAR(10) | ❌       | 창고 ID |
+
+## 문제
+
+`FOOD_PRODUCT`와 `FOOD_ORDER` 테이블에서 **생산일자가 2022년 5월인 식품**의 식품 ID, 식품 이름, 총매출을 조회합니다.
+
+* `PRODUCT_ID`를 기준으로 두 테이블을 JOIN
+* 생산일자가 2022년 5월인 주문만 조회
+* 총매출은 `주문량 × 식품 가격`의 합계
+* 총매출을 기준으로 내림차순 정렬
+* 총매출이 같다면 식품 ID를 기준으로 오름차순 정렬
+
+### 풀이
+
+[10번 문제 풀이 보기](./solve/10_food_product_total_sales_may_2022.sql)
+
+---
+---
+
+### [11. 2022년 4월 13일 취소되지 않은 흉부외과 진료 예약 조회]
+
+### PATIENT 테이블
+
+| 컬럼명       | 타입         | NULL 허용 | 설명   |
+| --------- | ---------- | ------- | ---- |
+| `PT_NO`   | VARCHAR(N) | ❌       | 환자번호 |
+| `PT_NAME` | VARCHAR(N) | ❌       | 환자이름 |
+| `GEND_CD` | VARCHAR(N) | ❌       | 성별코드 |
+| `AGE`     | INTEGER    | ❌       | 나이   |
+| `TLNO`    | VARCHAR(N) | ⭕       | 전화번호 |
+
+### DOCTOR 테이블
+
+| 컬럼명        | 타입         | NULL 허용 | 설명    |
+| ---------- | ---------- | ------- | ----- |
+| `DR_NAME`  | VARCHAR(N) | ❌       | 의사이름  |
+| `DR_ID`    | VARCHAR(N) | ❌       | 의사ID  |
+| `LCNS_NO`  | VARCHAR(N) | ❌       | 면허번호  |
+| `HIRE_YMD` | DATE       | ❌       | 고용일자  |
+| `MCDP_CD`  | VARCHAR(N) | ⭕       | 진료과코드 |
+| `TLNO`     | VARCHAR(N) | ⭕       | 전화번호  |
+
+### APPOINTMENT 테이블
+
+| 컬럼명             | 타입         | NULL 허용 | 설명      |
+| --------------- | ---------- | ------- | ------- |
+| `APNT_YMD`      | TIMESTAMP  | ❌       | 진료 예약일시 |
+| `APNT_NO`       | INTEGER    | ❌       | 진료예약번호  |
+| `PT_NO`         | VARCHAR(N) | ❌       | 환자번호    |
+| `MCDP_CD`       | VARCHAR(N) | ❌       | 진료과코드   |
+| `MDDR_ID`       | VARCHAR(N) | ❌       | 의사ID    |
+| `APNT_CNCL_YN`  | VARCHAR(N) | ⭕       | 예약취소여부  |
+| `APNT_CNCL_YMD` | DATE       | ⭕       | 예약취소날짜  |
+
+## 문제
+
+`PATIENT`, `DOCTOR`, `APPOINTMENT` 테이블에서 **2022년 4월 13일 취소되지 않은 흉부외과(CS) 진료 예약 내역**을 조회합니다.
+
+* `PATIENT`와 `APPOINTMENT`를 `PT_NO` 기준으로 JOIN
+* `DOCTOR`와 `APPOINTMENT`를 `DR_ID`와 `MDDR_ID` 기준으로 JOIN
+* 예약 취소 여부가 `N`인 데이터만 조회
+* 진료과 코드가 `CS`인 데이터만 조회
+* 진료 예약일시가 2022년 4월 13일인 데이터만 조회
+* 진료예약일시를 기준으로 오름차순 정렬
+
+### 풀이
+
+[11번 문제 풀이 보기](./solve/11_thoracic_surgery_appointment_2022_04_13.sql)
