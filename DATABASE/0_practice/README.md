@@ -529,3 +529,43 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ---
 ---
 
+### [14. 10월에 대여를 시작한 세단 차량 조회]
+
+### CAR_RENTAL_COMPANY_CAR 테이블
+
+| 컬럼명         | 타입           | NULL 허용 | 설명         |
+| ----------- | ------------ | ------- | ---------- |
+| `CAR_ID`    | INTEGER      | ❌       | 자동차 ID     |
+| `CAR_TYPE`  | VARCHAR(255) | ❌       | 자동차 종류     |
+| `DAILY_FEE` | INTEGER      | ❌       | 일일 대여 요금   |
+| `OPTIONS`   | VARCHAR(255) | ❌       | 자동차 옵션 리스트 |
+
+### CAR_RENTAL_COMPANY_RENTAL_HISTORY 테이블
+
+| 컬럼명          | 타입      | NULL 허용 | 설명       |
+| ------------ | ------- | ------- | -------- |
+| `HISTORY_ID` | INTEGER | ❌       | 대여 기록 ID |
+| `CAR_ID`     | INTEGER | ❌       | 자동차 ID   |
+| `START_DATE` | DATE    | ❌       | 대여 시작일   |
+| `END_DATE`   | DATE    | ❌       | 대여 종료일   |
+
+## 문제
+
+`CAR_RENTAL_COMPANY_CAR`와 `CAR_RENTAL_COMPANY_RENTAL_HISTORY` 테이블에서 **자동차 종류가 세단이면서 2022년 10월에 대여를 시작한 기록이 있는 자동차**의 ID를 조회합니다.
+
+* 자동차 종류가 `세단`인 자동차 조회
+* 2022년 10월에 대여를 시작한 기록 조회
+* 자동차 ID의 중복 제거
+* 자동차 ID를 기준으로 내림차순 정렬
+
+### 핵심 로직
+
+* 두 테이블을 `CAR_ID`를 기준으로 `JOIN`
+* `CAR_TYPE = '세단'`으로 세단 차량만 필터링
+* `TO_CHAR(START_DATE, 'YYYY-MM') = '2022-10'`으로 2022년 10월에 대여를 시작한 기록만 필터링
+* 같은 자동차가 10월에 여러 번 대여됐을 수 있으므로 `DISTINCT`로 `CAR_ID` 중복 제거
+* `CAR_ID` 기준 내림차순으로 정렬
+
+### 풀이
+
+[14번 문제 풀이 보기](./solve/14_sedan_cars_rented_in_october.sql)
