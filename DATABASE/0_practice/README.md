@@ -448,3 +448,49 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [11번 문제 풀이 보기](./solve/11_thoracic_surgery_appointment_2022_04_13.sql)
+
+---
+---
+
+### [12. 2022년 1월 저자별 카테고리별 매출액 조회]
+
+### BOOK 테이블
+
+| 컬럼명              | 타입         | NULL 허용 | 설명    |
+| ---------------- | ---------- | ------- | ----- |
+| `BOOK_ID`        | INTEGER    | ❌       | 도서 ID |
+| `CATEGORY`       | VARCHAR(N) | ❌       | 카테고리  |
+| `AUTHOR_ID`      | INTEGER    | ❌       | 저자 ID |
+| `PRICE`          | INTEGER    | ❌       | 판매가   |
+| `PUBLISHED_DATE` | DATE       | ❌       | 출판일   |
+
+### AUTHOR 테이블
+
+| 컬럼명           | 타입         | NULL 허용 | 설명    |
+| ------------- | ---------- | ------- | ----- |
+| `AUTHOR_ID`   | INTEGER    | ❌       | 저자 ID |
+| `AUTHOR_NAME` | VARCHAR(N) | ❌       | 저자명   |
+
+### BOOK_SALES 테이블
+
+| 컬럼명          | 타입      | NULL 허용 | 설명    |
+| ------------ | ------- | ------- | ----- |
+| `BOOK_ID`    | INTEGER | ❌       | 도서 ID |
+| `SALES_DATE` | DATE    | ❌       | 판매일   |
+| `SALES`      | INTEGER | ❌       | 판매량   |
+
+## 문제
+
+`BOOK`, `AUTHOR`, `BOOK_SALES` 테이블에서 **2022년 1월 도서 판매 데이터를 기준으로 저자별, 카테고리별 매출액**을 조회합니다.
+
+* `AUTHOR`와 `BOOK`을 `AUTHOR_ID` 기준으로 JOIN
+* `BOOK`과 `BOOK_SALES`를 `BOOK_ID` 기준으로 JOIN
+* 2022년 1월 판매 데이터만 조회
+* 매출액은 `판매량 × 판매가`의 합계
+* 저자 ID, 저자명, 카테고리, 매출액을 조회
+* 저자 ID를 기준으로 오름차순 정렬
+* 저자 ID가 같다면 카테고리를 기준으로 내림차순 정렬
+
+### 풀이
+
+[12번 문제 풀이 보기](./solve/12_author_category_sales_january_2022.sql)
