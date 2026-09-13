@@ -569,3 +569,66 @@ SQL 학습 과정에서 접한 문제를 직접 풀이하고,
 ### 풀이
 
 [14번 문제 풀이 보기](./solve/14_sedan_cars_rented_in_october.sql)
+
+---
+---
+
+### [15. 아직 입양하지 못한 동물 중 가장 오래 보호소에 있었던 동물 3마리 조회]
+
+### ANIMAL_INS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물의 아이디     |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 보호 시작일      |
+| `INTAKE_CONDITION` | VARCHAR(N) | ❌       | 보호 시작 시 상태  |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_INTAKE`  | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+### ANIMAL_OUTS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물의 아이디     |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 입양일         |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_OUTCOME` | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+## 문제
+
+`ANIMAL_INS`와 `ANIMAL_OUTS` 테이블에서 **아직 입양하지 못한 동물 중 가장 오래 보호소에 있었던 동물 3마리**의 이름과 보호 시작일을 조회합니다.
+
+* `ANIMAL_OUTS`에 존재하지 않는 동물만 조회
+* 보호 시작일이 오래된 순으로 정렬
+* 가장 오래된 3마리만 조회
+
+### 핵심 로직
+
+* `ANIMAL_OUTS`의 `ANIMAL_ID`를 서브쿼리로 조회
+* `NOT IN`을 사용하여 `ANIMAL_OUTS`에 없는 동물만 필터링
+* `ORDER BY DATETIME ASC`로 보호 시작일이 오래된 순으로 정렬
+* `FETCH FIRST 3 ROWS ONLY`를 사용하여 정렬된 결과에서 앞의 3개 행만 조회
+
+### FETCH FIRST
+
+```sql
+FETCH FIRST 숫자 ROWS ONLY
+```
+
+조회 결과에서 **앞에서부터 지정한 개수만큼의 행을 가져오는 문법**입니다.
+
+```sql
+ORDER BY DATETIME ASC
+FETCH FIRST 3 ROWS ONLY
+```
+
+* `ORDER BY DATETIME ASC` → 보호 시작일이 오래된 순으로 정렬
+* `FETCH FIRST 3 ROWS ONLY` → 정렬된 결과에서 앞의 3개 행만 조회
+
+따라서 위 코드는 **보호 시작일이 가장 오래된 동물 3마리**를 조회합니다.
+
+### 풀이
+
+[15번 문제 풀이 보기](./solve/15_oldest_animals_not_adopted.sql)
