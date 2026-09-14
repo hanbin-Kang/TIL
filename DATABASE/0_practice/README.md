@@ -632,3 +632,52 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [15번 문제 풀이 보기](./solve/15_oldest_animals_not_adopted.sql)
+
+---
+---
+
+### [16. 보호기간이 가장 긴 입양 동물 2마리 조회]
+
+### ANIMAL_INS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물의 아이디     |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 보호 시작일      |
+| `INTAKE_CONDITION` | VARCHAR(N) | ❌       | 보호 시작 시 상태  |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_INTAKE`  | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+### ANIMAL_OUTS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물의 아이디     |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 입양일         |
+| `NAME`             | VARCHAR(N) | ⭕       | 이름          |
+| `SEX_UPON_OUTCOME` | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+## 문제
+
+`ANIMAL_INS`와 `ANIMAL_OUTS` 테이블에서 **입양을 간 동물 중 보호 기간이 가장 길었던 동물 2마리**의 아이디와 이름을 조회합니다.
+
+* `ANIMAL_INS`와 `ANIMAL_OUTS`를 `ANIMAL_ID` 기준으로 조인
+* 보호 기간이 긴 순으로 정렬
+* 보호 기간이 가장 긴 2마리만 조회
+
+### 핵심 로직
+
+* `ANIMAL_INS`와 `ANIMAL_OUTS`를 `ANIMAL_ID` 기준으로 `JOIN`하여 입양을 간 동물만 조회
+* `O.DATETIME - I.DATETIME`으로 입양일까지의 보호 기간을 계산
+* 서브쿼리에서 보호 기간을 내림차순으로 정렬한 후 `FETCH FIRST 2 ROWS ONLY`로 가장 오래 보호된 2마리의 ID를 조회
+* 메인쿼리에서 `IN`을 사용하여 해당 동물의 ID와 이름을 조회
+* 최종 결과도 보호 기간이 긴 순으로 정렬
+
+### 풀이
+
+[16번 문제 풀이 보기](./solve/16_longest_shelter_period_adopted_animals.sql)
+
+---
+---
