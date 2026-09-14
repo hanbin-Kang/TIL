@@ -1,0 +1,11 @@
+-- 7월 아이스크림 총 주문량과 상반기의 아이스크림 총 주문량을 더한 값이 큰 순서대로 상위 3개의 맛을 조회하는 SQL문
+
+-- 맛 별 7월 총 주문량
+SELECT J.FLAVOR 
+FROM JULY J JOIN FIRST_HALF F
+ON J.FLAVOR = F.FLAVOR
+GROUP BY J.FLAVOR
+ORDER BY SUM(J.TOTAL_ORDER + F.TOTAL_ORDER) DESC
+FETCH FIRST 3 ROW ONLY;
+
+-- SELECT문에 SUM(J.TOTAL_ORDER + F.TOTAL_ORDER) << 이게 없어도 됨
