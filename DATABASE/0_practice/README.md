@@ -759,3 +759,49 @@ FETCH FIRST 3 ROWS ONLY
 ---
 ---
 
+### [19. 리뷰를 가장 많이 작성한 회원의 리뷰 조회]
+
+### MEMBER_PROFILE 테이블
+
+| 컬럼명             | 타입           | NULL 허용 | 설명     |
+| --------------- | ------------ | ------- | ------ |
+| `MEMBER_ID`     | VARCHAR(100) | ❌       | 회원 ID  |
+| `MEMBER_NAME`   | VARCHAR(50)  | ❌       | 회원 이름  |
+| `TLNO`          | VARCHAR(50)  | ⭕       | 회원 연락처 |
+| `GENDER`        | VARCHAR(1)   | ⭕       | 성별     |
+| `DATE_OF_BIRTH` | DATE         | ⭕       | 생년월일   |
+
+### REST_REVIEW 테이블
+
+| 컬럼명            | 타입            | NULL 허용 | 설명     |
+| -------------- | ------------- | ------- | ------ |
+| `REVIEW_ID`    | VARCHAR(10)   | ❌       | 리뷰 ID  |
+| `REST_ID`      | VARCHAR(10)   | ⭕       | 식당 ID  |
+| `MEMBER_ID`    | VARCHAR(100)  | ⭕       | 회원 ID  |
+| `REVIEW_SCORE` | NUMBER        | ⭕       | 리뷰 점수  |
+| `REVIEW_TEXT`  | VARCHAR(1000) | ⭕       | 리뷰 내용  |
+| `REVIEW_DATE`  | DATE          | ⭕       | 리뷰 작성일 |
+
+## 문제
+
+`MEMBER_PROFILE`과 `REST_REVIEW` 테이블에서 **리뷰를 가장 많이 작성한 회원의 리뷰**를 조회합니다.
+
+* 리뷰를 가장 많이 작성한 회원 조회
+* 회원 이름, 리뷰 텍스트, 리뷰 작성일 출력
+* 리뷰 작성일 기준 오름차순 정렬
+* 리뷰 작성일이 같다면 리뷰 텍스트 기준 오름차순 정렬
+* 리뷰 작성일은 `YYYY-MM-DD` 형식으로 출력
+
+### 핵심 로직
+
+* `REST_REVIEW`에서 `MEMBER_ID`별 `COUNT(REVIEW_TEXT)`를 구하여 회원별 리뷰 개수를 집계
+* `ORDER BY COUNT(REVIEW_TEXT) DESC`와 `FETCH FIRST 1 ROW ONLY`를 사용하여 가장 많은 리뷰 개수를 조회
+* `HAVING COUNT(REVIEW_TEXT) = (...)`를 사용하여 최대 리뷰 개수와 동일한 회원의 `MEMBER_ID`를 조회
+* `MEMBER_PROFILE`과 `REST_REVIEW`를 `MEMBER_ID` 기준으로 `JOIN`
+* `IN`을 사용하여 리뷰를 가장 많이 작성한 회원의 리뷰만 필터링
+* `TO_CHAR(R.REVIEW_DATE, 'YYYY-MM-DD')`를 사용하여 리뷰 작성일의 출력 형식을 지정
+* `REVIEW_DATE` 오름차순, 리뷰 작성일이 같으면 `REVIEW_TEXT` 오름차순으로 정렬
+
+### 풀이
+
+[19번 문제 풀이 보기](./solve/19_member_with_most_reviews.sql)
