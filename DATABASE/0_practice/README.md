@@ -810,7 +810,7 @@ FETCH FIRST 3 ROWS ONLY
 ---
 
 ### [20. 특정 옵션을 포함하는 자동차 종류별 대수 조회]
-
+`
 ### CAR_RENTAL_COMPANY_CAR 테이블
 
 | 컬럼명         | 타입           | NULL 허용 | 설명         |
