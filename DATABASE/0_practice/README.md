@@ -809,7 +809,7 @@ FETCH FIRST 3 ROWS ONLY
 ---
 ---
 
-### 20. 특정 옵션을 포함하는 자동차 종류별 대수 조회
+### [20. 특정 옵션을 포함하는 자동차 종류별 대수 조회]
 
 ### CAR_RENTAL_COMPANY_CAR 테이블
 
@@ -839,3 +839,39 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [20번 문제 풀이 보기](./solve/20_car_option_type_count.sql)
+
+---
+---
+
+### [21. 시간대별 입양 건수 조회]
+
+### ANIMAL_OUTS 테이블
+
+| 컬럼명                | 타입         | NULL 허용 | 설명          |
+| ------------------ | ---------- | ------- | ----------- |
+| `ANIMAL_ID`        | VARCHAR(N) | ❌       | 동물의 아이디     |
+| `ANIMAL_TYPE`      | VARCHAR(N) | ❌       | 생물 종        |
+| `DATETIME`         | DATETIME   | ❌       | 입양일         |
+| `NAME`             | VARCHAR(N) | ⭕       | 동물 이름       |
+| `SEX_UPON_OUTCOME` | VARCHAR(N) | ❌       | 성별 및 중성화 여부 |
+
+## 문제
+
+`ANIMAL_OUTS` 테이블에서 **09:00부터 19:59까지 각 시간대별 입양 건수**를 조회합니다.
+
+* 09시부터 19시까지의 입양 건수를 시간대별로 집계
+* 시간대는 숫자로 출력
+* 시간대 순으로 오름차순 정렬
+
+### 핵심 로직
+
+* `TO_CHAR(DATETIME, 'FMHH24')`로 `DATETIME`에서 24시간제의 시간만 추출
+* `TO_NUMBER()`를 사용하여 추출한 시간을 숫자로 변환
+* `HAVING HOUR BETWEEN 9 AND 19`로 09시~19시 범위만 남김
+* `GROUP BY HOUR`로 같은 시간대끼리 그룹화
+* `COUNT(*)`로 각 시간대의 입양 건수를 집계
+* `ORDER BY HOUR ASC`로 시간대 순서대로 정렬
+
+### 풀이
+
+[21번 문제 풀이 보기](./solve/21_hourly_animal_outs_count.sql)
