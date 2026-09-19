@@ -1020,3 +1020,40 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [24번 문제 풀이 보기](./solve/24_department_average_salary.sql)
+
+---
+---
+
+### [25. 월별 잡은 물고기 수 조회]
+
+### FISH_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명         |
+| ----------- | ------- | ------- | ---------- |
+| `ID`        | INTEGER | ❌       | 물고기 ID     |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류     |
+| `LENGTH`    | FLOAT   | ⭕       | 물고기 길이(cm) |
+| `TIME`      | DATE    | ❌       | 물고기를 잡은 날짜 |
+
+## 문제
+
+`FISH_INFO` 테이블에서 **월별로 잡은 물고기의 수와 월**을 조회합니다.
+
+* 잡은 물고기 수를 `FISH_COUNT`로 출력
+* 월을 `MONTH`로 출력
+* 월은 숫자 형태로 출력
+* 물고기가 없는 월은 출력하지 않음
+* 월을 기준으로 오름차순 정렬
+
+### 핵심 로직
+
+* `EXTRACT(MONTH FROM TIME)`을 사용하여 잡은 날짜에서 월을 추출
+* `GROUP BY`로 같은 월의 물고기들을 그룹화
+* `COUNT(ID)`로 각 월에 잡은 물고기의 수를 계산
+* `ORDER BY MONTH ASC`로 월을 1월부터 오름차순 정렬
+* `FISH_INFO`에 실제 데이터가 존재하는 월만 그룹으로 생성되므로 물고기가 없는 월은 결과에 포함되지 않음
+* `HAVING FISH_COUNT <> 0`은 `COUNT(ID)`가 항상 1 이상인 그룹만 생성되므로 생략 가능
+
+### 풀이
+
+[25번 문제 풀이 보기](./solve/25_monthly_fish_count.sql)
