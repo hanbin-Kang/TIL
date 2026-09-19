@@ -1098,3 +1098,43 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [26번 문제 풀이 보기](./solve/26_suwon_yearly_air_pollution.sql)
+
+---
+---
+
+### [27. 물고기 종류별 이름과 잡은 수 조회]
+
+### FISH_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명         |
+| ----------- | ------- | ------- | ---------- |
+| `ID`        | INTEGER | ❌       | 물고기 ID     |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류     |
+| `LENGTH`    | FLOAT   | ⭕       | 물고기 길이(cm) |
+| `TIME`      | DATE    | ❌       | 물고기를 잡은 날짜 |
+
+### FISH_NAME_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명     |
+| ----------- | ------- | ------- | ------ |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류 |
+| `FISH_NAME` | VARCHAR | ❌       | 물고기 이름 |
+
+## 문제
+
+`FISH_INFO`와 `FISH_NAME_INFO` 테이블을 이용해 **물고기 종류별 이름과 잡은 수**를 조회합니다.
+
+* 물고기 이름을 `FISH_NAME`으로 출력
+* 잡은 수를 `FISH_COUNT`로 출력
+* 잡은 수를 기준으로 내림차순 정렬
+
+### 핵심 로직
+
+* `FISH_TYPE`을 기준으로 두 테이블을 조인하여 물고기의 종류와 이름을 연결
+* `COUNT(I.ID)`를 사용하여 물고기 종류별로 잡은 수를 계산
+* `GROUP BY N.FISH_NAME`으로 물고기 이름별 그룹을 생성
+* `ORDER BY FISH_COUNT DESC`로 잡은 수가 많은 물고기부터 정렬
+
+### 풀이
+
+[27번 문제 풀이 보기](./solve/27_fish_count_by_name.sql)
