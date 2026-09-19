@@ -972,3 +972,51 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [23번 문제 풀이 보기](./solve/23_rental_history_aug_to_oct_5_or_more.sql)
+
+---
+---
+
+### [24. 부서별 평균 연봉 조회]
+
+### HR_DEPARTMENT 테이블
+
+| 컬럼명            | 타입      | NULL 허용 | 설명     |
+| -------------- | ------- | ------- | ------ |
+| `DEPT_ID`      | VARCHAR | ❌       | 부서 ID  |
+| `DEPT_NAME_KR` | VARCHAR | ❌       | 국문 부서명 |
+| `DEPT_NAME_EN` | VARCHAR | ❌       | 영문 부서명 |
+| `LOCATION`     | VARCHAR | ❌       | 부서 위치  |
+
+### HR_EMPLOYEES 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명    |
+| ----------- | ------- | ------- | ----- |
+| `EMP_NO`    | VARCHAR | ❌       | 사번    |
+| `EMP_NAME`  | VARCHAR | ❌       | 성명    |
+| `DEPT_ID`   | VARCHAR | ❌       | 부서 ID |
+| `POSITION`  | VARCHAR | ❌       | 직책    |
+| `EMAIL`     | VARCHAR | ❌       | 이메일   |
+| `COMP_TEL`  | VARCHAR | ❌       | 전화번호  |
+| `HIRE_DATE` | DATE    | ❌       | 입사일   |
+| `SAL`       | NUMBER  | ❌       | 연봉    |
+
+## 문제
+
+`HR_DEPARTMENT`와 `HR_EMPLOYEES` 테이블을 이용해 **부서별 평균 연봉**을 조회합니다.
+
+* 부서 ID, 영문 부서명, 평균 연봉을 조회
+* 평균 연봉의 컬럼명은 `AVG_SAL`로 지정
+* 평균 연봉은 소수점 첫째 자리에서 반올림
+* 부서별 평균 연봉을 기준으로 내림차순 정렬
+
+### 핵심 로직
+
+* `DEPT_ID`를 기준으로 `HR_DEPARTMENT`와 `HR_EMPLOYEES`를 조인하여 부서 정보와 사원 연봉 정보를 연결
+* `GROUP BY D.DEPT_ID, D.DEPT_NAME_EN`으로 부서별 그룹을 생성
+* `AVG(E.SAL)`을 사용하여 각 부서의 평균 연봉을 계산
+* `ROUND()`로 평균 연봉의 소수점 이하를 반올림
+* `ORDER BY AVG_SAL DESC`로 평균 연봉이 높은 부서부터 정렬
+
+### 풀이
+
+[24번 문제 풀이 보기](./solve/24_department_average_salary.sql)
