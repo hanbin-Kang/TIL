@@ -867,7 +867,7 @@ FETCH FIRST 3 ROWS ONLY
 
 * `TO_CHAR(DATETIME, 'FMHH24')`로 `DATETIME`에서 24시간제의 시간만 추출
 * `TO_NUMBER()`를 사용하여 추출한 시간을 숫자로 변환
-* `HAVING HOUR BETWEEN 9 AND 19`로 09시~19시 범위만 남김
+* `WHERE HOUR BETWEEN 9 AND 19`로 09시~19시 범위만 남김
 * `GROUP BY HOUR`로 같은 시간대끼리 그룹화
 * `COUNT(*)`로 각 시간대의 입양 건수를 집계
 * `ORDER BY HOUR ASC`로 시간대 순서대로 정렬
@@ -875,3 +875,51 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [21번 문제 풀이 보기](./solve/21_hourly_animal_outs_count.sql)
+
+---
+---
+
+### [22. 연도별 월별 성별 온라인 구매 회원 수 조회]
+
+### USER_INFO 테이블
+
+| 컬럼명       | 타입         | NULL 허용 | 설명    |
+| --------- | ---------- | ------- | ----- |
+| `USER_ID` | INTEGER    | ❌       | 회원 ID |
+| `GENDER`  | TINYINT(1) | ⭕       | 성별    |
+| `AGE`     | INTEGER    | ⭕       | 나이    |
+| `JOINED`  | DATE       | ❌       | 가입일   |
+
+### ONLINE_SALE 테이블
+
+| 컬럼명              | 타입      | NULL 허용 | 설명        |
+| ---------------- | ------- | ------- | --------- |
+| `ONLINE_SALE_ID` | INTEGER | ❌       | 온라인 판매 ID |
+| `USER_ID`        | INTEGER | ❌       | 회원 ID     |
+| `PRODUCT_ID`     | INTEGER | ❌       | 상품 ID     |
+| `SALES_AMOUNT`   | INTEGER | ❌       | 판매량       |
+| `SALES_DATE`     | DATE    | ❌       | 판매일       |
+
+## 문제
+
+`USER_INFO`와 `ONLINE_SALE` 테이블에서 **년, 월, 성별별로 상품을 구매한 회원 수**를 조회합니다.
+
+* `USER_ID`를 기준으로 두 테이블을 조인
+* 성별 정보가 없는 회원은 제외
+* 판매일에서 년, 월을 추출하여 그룹화
+* 년, 월, 성별별 중복되지 않는 구매 회원 수를 집계
+* 년, 월, 성별을 기준으로 오름차순 정렬
+
+### 핵심 로직
+
+* `USER_INFO`와 `ONLINE_SALE`을 `USER_ID`로 `JOIN`하여 구매 회원의 성별 정보를 연결
+* `WHERE U.GENDER IS NOT NULL`로 성별 정보가 없는 회원을 제외
+* `TO_CHAR(O.SALES_DATE, 'YYYY')`로 판매 연도를 추출
+* `TO_CHAR(O.SALES_DATE, 'FMMM')`으로 판매 월을 추출
+* `GROUP BY YEAR, MONTH, GENDER`로 연도·월·성별별 그룹을 생성
+* `COUNT(DISTINCT O.USER_ID)`로 같은 기간에 여러 상품을 구매한 회원도 **한 명으로 계산**
+* `ORDER BY YEAR ASC, MONTH ASC, GENDER ASC`로 연도 → 월 → 성별 순으로 오름차순 정렬
+
+### 풀이
+
+[22번 문제 풀이 보기](./solve/22_online_sale_users_by_gender_month.sql)
