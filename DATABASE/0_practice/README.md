@@ -1304,3 +1304,114 @@ ORDER BY CASE
 ### 풀이
 
 [29번 문제 풀이 보기](./solve/29_fish_type_average_length_over_33.sql)
+
+---
+---
+
+### [30. 평가 등급과 성과금 조회]
+
+### HR_DEPARTMENT 테이블
+
+| 컬럼명            | 타입      | NULL 허용 | 설명     |
+| -------------- | ------- | ------- | ------ |
+| `DEPT_ID`      | VARCHAR | ❌       | 부서 ID  |
+| `DEPT_NAME_KR` | VARCHAR | ❌       | 국문 부서명 |
+| `DEPT_NAME_EN` | VARCHAR | ❌       | 영문 부서명 |
+| `LOCATION`     | VARCHAR | ❌       | 부서 위치  |
+
+### HR_EMPLOYEES 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명    |
+| ----------- | ------- | ------- | ----- |
+| `EMP_NO`    | VARCHAR | ❌       | 사번    |
+| `EMP_NAME`  | VARCHAR | ❌       | 성명    |
+| `DEPT_ID`   | VARCHAR | ❌       | 부서 ID |
+| `POSITION`  | VARCHAR | ❌       | 직책    |
+| `EMAIL`     | VARCHAR | ❌       | 이메일   |
+| `COMP_TEL`  | VARCHAR | ❌       | 전화번호  |
+| `HIRE_DATE` | DATE    | ❌       | 입사일   |
+| `SAL`       | NUMBER  | ❌       | 연봉    |
+
+### HR_GRADE 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명    |
+| ----------- | ------- | ------- | ----- |
+| `EMP_NO`    | VARCHAR | ❌       | 사번    |
+| `YEAR`      | NUMBER  | ❌       | 연도    |
+| `HALF_YEAR` | NUMBER  | ❌       | 반기    |
+| `SCORE`     | NUMBER  | ❌       | 평가 점수 |
+
+## 문제
+
+`HR_DEPARTMENT`, `HR_EMPLOYEES`, `HR_GRADE` 테이블을 이용하여 사원별 성과금 정보를 조회합니다.
+
+평가 점수의 평균에 따라 등급을 결정하고, 해당 등급에 따라 연봉 기준 성과금을 계산합니다.
+
+* 평가 점수의 평균이 96점 이상이면 `S`
+* 평가 점수의 평균이 90점 이상이면 `A`
+* 평가 점수의 평균이 80점 이상이면 `B`
+* 그 외에는 `C`
+* 평가 등급은 `GRADE`로 출력
+* 성과금은 `BONUS`로 출력
+* 사번 기준 오름차순 정렬
+
+### 핵심 로직
+
+* `HR_EMPLOYEES`와 `HR_GRADE`를 `EMP_NO` 기준으로 조인
+* `AVG(G.SCORE)`를 이용하여 사원별 1분기와 2분기 평가 점수의 평균을 계산
+* `CASE`를 사용하여 평균 점수에 따라 `S`, `A`, `B`, `C` 등급을 결정
+* 등급별 연봉의 20%, 15%, 10%, 0%를 성과금으로 계산
+* `GROUP BY`를 통해 사원별로 평가 점수를 집계
+* `ORDER BY EMP_NO ASC`를 통해 사번 기준으로 오름차순 정렬
+
+### WITH절을 이용한 등급 재사용
+
+등급을 결정하는 `CASE`와 성과금을 계산하는 `CASE`에서 동일한 평균 점수 조건을 반복해서 사용하는 대신, `WITH`절을 이용하여 먼저 등급을 계산한 뒤 그 등급을 성과금 계산에 재사용할 수 있다.
+
+```sql
+WITH GRADING AS (
+    SELECT E.EMP_NO,
+           E.EMP_NAME,
+           E.SAL,
+           CASE
+               WHEN AVG(G.SCORE) >= 96 THEN 'S'
+               WHEN AVG(G.SCORE) >= 90 THEN 'A'
+               WHEN AVG(G.SCORE) >= 80 THEN 'B'
+               ELSE 'C'
+           END AS GRADE
+    FROM HR_EMPLOYEES E
+    JOIN HR_GRADE G
+      ON E.EMP_NO = G.EMP_NO
+    GROUP BY E.EMP_NO, E.EMP_NAME, E.SAL
+)
+```
+
+`WITH GRADING AS (...)`은 서브쿼리 결과에 `GRADING`이라는 이름을 붙여 뒤의 `SELECT`에서 사용할 수 있도록 한다.
+
+이후 `GRADING`에서 만들어진 `GRADE`를 이용하여 성과금을 계산한다.
+
+```sql
+CASE
+    WHEN GRADE = 'S' THEN SAL * 0.2
+    WHEN GRADE = 'A' THEN SAL * 0.15
+    WHEN GRADE = 'B' THEN SAL * 0.1
+    ELSE 0
+END AS BONUS
+```
+
+### CASE 표현식 활용
+
+`CASE`는 조건에 따라 다른 값을 반환하는 표현식이다.
+
+```sql
+CASE
+    WHEN 조건 THEN 결과
+    ELSE 결과
+END
+```
+
+이번 문제에서는 `AVG(G.SCORE)`를 기준으로 평가 등급을 결정하고, `GRADE`를 기준으로 성과금을 계산하는 데 사용했다.
+
+### 풀이
+
+[30번 문제 풀이 보기](./solve/30_employee_grade_bonus.sql)
