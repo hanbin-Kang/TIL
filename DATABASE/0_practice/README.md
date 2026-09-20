@@ -1185,3 +1185,122 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [28번 문제 풀이 보기](./solve/28_2022_highest_evaluation_score_employee.sql)
+
+---
+---
+
+### [29. 평균 길이 33cm 이상인 물고기 종류 조회]
+
+### FISH_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명         |
+| ----------- | ------- | ------- | ---------- |
+| `ID`        | INTEGER | ❌       | 물고기 ID     |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류     |
+| `LENGTH`    | FLOAT   | ⭕       | 물고기 길이(cm) |
+| `TIME`      | DATE    | ❌       | 물고기를 잡은 날짜 |
+
+## 문제
+
+`FISH_INFO` 테이블에서 **평균 길이가 33cm 이상인 물고기들을 종류별로 분류하여 잡은 수, 최대 길이, 물고기의 종류**를 조회합니다.
+
+* 평균 길이가 33cm 이상인 물고기 종류만 조회
+* 잡은 수를 `FISH_COUNT`로 출력
+* 최대 길이를 `MAX_LENGTH`로 출력
+* 물고기 종류를 `FISH_TYPE`으로 출력
+* 10cm 이하의 물고기는 10cm로 취급하여 평균 길이 계산
+* 물고기 종류를 기준으로 오름차순 정렬
+
+### 핵심 로직
+
+* 서브쿼리에서 `FISH_TYPE`별로 그룹화하여 물고기 종류별 평균 길이를 계산
+* `CASE`를 사용하여 `LENGTH`가 10cm 이하인 경우 10으로 변환
+* `HAVING AVG(...) >= 33`으로 평균 길이가 33cm 이상인 물고기 종류만 추출
+* 바깥 쿼리에서 해당 `FISH_TYPE`에 속하는 물고기만 조회
+* `COUNT(*)`로 종류별 잡은 수를 계산
+* `MAX(LENGTH)`로 종류별 최대 길이를 계산
+* `GROUP BY FISH_TYPE`으로 물고기 종류별 집계
+* `ORDER BY FISH_TYPE ASC`로 물고기 종류를 오름차순 정렬
+
+### CASE 표현식 활용
+
+`CASE`는 조건에 따라 값을 다르게 반환하는 표현식이다.
+
+```sql
+CASE
+    WHEN 조건 THEN 결과
+    ELSE 결과
+END
+```
+
+### 1. SELECT에서 사용
+
+조건에 따라 조회할 값을 변경할 수 있다.
+
+```sql
+SELECT CASE
+           WHEN LENGTH > 10 THEN LENGTH
+           ELSE 10
+       END AS LENGTH
+FROM FISH_INFO;
+```
+
+### 2. WHERE에서 사용
+
+조건에 따라 특정 값을 만들어 필터링할 수 있다.
+
+```sql
+WHERE CASE
+          WHEN LENGTH > 10 THEN LENGTH
+          ELSE 10
+      END >= 33
+```
+
+### 3. GROUP BY에서 사용
+
+조건에 따라 데이터를 분류한 뒤 그룹화할 수 있다.
+
+```sql
+GROUP BY CASE
+             WHEN LENGTH >= 30 THEN 'LONG'
+             ELSE 'SHORT'
+         END
+```
+
+### 4. HAVING에서 사용
+
+그룹별 집계 결과를 계산할 때 `CASE`를 사용할 수 있다.
+
+```sql
+HAVING AVG(
+    CASE
+        WHEN LENGTH > 10 THEN LENGTH
+        ELSE 10
+    END
+) >= 33
+```
+
+이번 문제에서는 `HAVING`에서 `AVG()`와 함께 사용하여 **10cm 이하의 물고기를 10cm로 취급한 평균 길이**를 계산했다.
+
+### 5. ORDER BY에서 사용
+
+조건에 따라 정렬 기준을 다르게 만들 수 있다.
+
+```sql
+ORDER BY CASE
+             WHEN LENGTH >= 30 THEN 1
+             ELSE 2
+         END;
+```
+
+### 핵심 정리
+
+`CASE`는 특정 절에서만 사용하는 문법이 아니라 **조건에 따라 값을 만들어내는 표현식**이다.
+
+따라서 `SELECT`, `WHERE`, `GROUP BY`, `HAVING`, `ORDER BY` 등에서 사용할 수 있다.
+
+이번 문제에서는 `HAVING`의 `AVG()` 안에서 `CASE`를 사용하여 **10cm 이하의 물고기를 10cm로 치환한 뒤 평균 길이를 계산**했다.
+
+### 풀이
+
+[29번 문제 풀이 보기](./solve/29_fish_type_average_length_over_33.sql)
