@@ -1138,3 +1138,50 @@ FETCH FIRST 3 ROWS ONLY
 ### 풀이
 
 [27번 문제 풀이 보기](./solve/27_fish_count_by_name.sql)
+
+---
+---
+
+### [28. 2022년 평가 점수가 가장 높은 사원 조회]
+
+### HR_EMPLOYEES 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명    |
+| ----------- | ------- | ------- | ----- |
+| `EMP_NO`    | VARCHAR | ❌       | 사번    |
+| `EMP_NAME`  | VARCHAR | ❌       | 성명    |
+| `DEPT_ID`   | VARCHAR | ❌       | 부서 ID |
+| `POSITION`  | VARCHAR | ❌       | 직책    |
+| `EMAIL`     | VARCHAR | ❌       | 이메일   |
+| `COMP_TEL`  | VARCHAR | ❌       | 전화번호  |
+| `HIRE_DATE` | DATE    | ❌       | 입사일   |
+| `SAL`       | NUMBER  | ❌       | 연봉    |
+
+### HR_GRADE 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명    |
+| ----------- | ------- | ------- | ----- |
+| `EMP_NO`    | VARCHAR | ❌       | 사번    |
+| `YEAR`      | NUMBER  | ❌       | 평가 연도 |
+| `HALF_YEAR` | NUMBER  | ❌       | 반기    |
+| `SCORE`     | NUMBER  | ❌       | 평가 점수 |
+
+## 문제
+
+`HR_EMPLOYEES`와 `HR_GRADE` 테이블을 이용해 **2022년도 한 해 동안 평가 점수가 가장 높은 사원**의 정보를 조회합니다.
+
+* 2022년 상반기와 하반기 평가 점수를 합산
+* 가장 높은 평가 점수를 받은 사원의 점수를 `SCORE`로 출력
+* 사번, 성명, 직책, 이메일을 함께 출력
+
+### 핵심 로직
+
+* `EMP_NO`를 기준으로 `HR_EMPLOYEES`와 `HR_GRADE`를 조인하여 사원 정보와 평가 정보를 연결
+* `SUM(G.SCORE)`를 사용하여 사원별 상반기와 하반기 평가 점수를 합산
+* `GROUP BY EMP_NO`로 사원별 평가 점수를 그룹화
+* `ORDER BY SUM(SCORE) DESC`로 합산 점수가 높은 사원부터 정렬
+* `LIMIT 1`을 사용하여 가장 높은 평가 점수를 받은 사원 1명을 조회
+
+### 풀이
+
+[28번 문제 풀이 보기](./solve/28_2022_highest_evaluation_score_employee.sql)
