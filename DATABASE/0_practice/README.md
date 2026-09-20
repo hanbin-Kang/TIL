@@ -1484,3 +1484,93 @@ ITEM_A → ITEM_B → ITEM_C
 ### 풀이
 
 [31번 문제 풀이 보기](./solve/31_non_upgradeable_items.sql)
+
+---
+---
+
+### [32. 종류별 가장 큰 물고기 조회]
+
+### FISH_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명         |
+| ----------- | ------- | ------- | ---------- |
+| `ID`        | INTEGER | ❌       | 물고기 ID     |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류     |
+| `LENGTH`    | FLOAT   | ⭕       | 물고기 길이(cm) |
+| `TIME`      | DATE    | ❌       | 물고기를 잡은 날짜 |
+
+### FISH_NAME_INFO 테이블
+
+| 컬럼명         | 타입      | NULL 허용 | 설명     |
+| ----------- | ------- | ------- | ------ |
+| `FISH_TYPE` | INTEGER | ❌       | 물고기 종류 |
+| `FISH_NAME` | VARCHAR | ❌       | 물고기 이름 |
+
+## 문제
+
+`FISH_INFO`와 `FISH_NAME_INFO` 테이블을 이용하여 **물고기 종류별로 가장 큰 물고기**의 ID, 이름, 길이를 조회합니다.
+
+* 물고기 종류별 가장 큰 물고기 1마리만 존재
+* `ID`를 `ID`로 출력
+* 물고기 이름을 `FISH_NAME`으로 출력
+* 물고기 길이를 `LENGTH`로 출력
+* 물고기 ID를 기준으로 오름차순 정렬
+
+### 핵심 로직
+
+* `FISH_INFO`와 `FISH_NAME_INFO`를 `FISH_TYPE` 기준으로 조인하여 물고기 이름을 가져옴
+* 서브쿼리에서 `FISH_TYPE`별 `MAX(LENGTH)`를 구함
+* `(I.FISH_TYPE, I.LENGTH)`를 함께 비교하여 **해당 종류의 최대 길이인 물고기**만 조회
+* `ORDER BY I.ID ASC`를 사용하여 물고기 ID 기준 오름차순 정렬
+
+### 서브쿼리 핵심
+
+```sql
+SELECT FISH_TYPE, MAX(LENGTH)
+FROM FISH_INFO
+GROUP BY FISH_TYPE
+```
+
+물고기 종류별로 그룹화한 후 각 종류에서 가장 큰 길이를 구한다.
+
+그 결과는 다음과 같은 형태가 된다.
+
+```text
+FISH_TYPE | MAX(LENGTH)
+----------|------------
+0         | 60
+1         | 73
+2         | 73
+```
+
+### 다중 컬럼 IN 활용
+
+```sql
+WHERE (I.FISH_TYPE, I.LENGTH) IN (
+    SELECT FISH_TYPE, MAX(LENGTH)
+    FROM FISH_INFO
+    GROUP BY FISH_TYPE
+)
+```
+
+`FISH_TYPE`과 `LENGTH`를 하나의 묶음으로 비교한다.
+
+단순히 최대 길이만 비교하는 것이 아니라,
+
+```text
+(물고기 종류, 물고기 길이)
+```
+
+가
+
+```text
+(해당 종류, 해당 종류의 최대 길이)
+```
+
+와 일치하는지를 확인한다.
+
+따라서 각 물고기 종류에서 **가장 큰 물고기만 정확하게 선택**할 수 있다.
+
+### 풀이
+
+[32번 문제 풀이 보기](./solve/32_longest_fish_by_type.sql)
