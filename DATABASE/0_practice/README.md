@@ -1415,3 +1415,72 @@ END
 ### 풀이
 
 [30번 문제 풀이 보기](./solve/30_employee_grade_bonus.sql)
+
+---
+---
+
+### [31. 업그레이드 불가능한 아이템 조회]
+
+### ITEM_INFO 테이블
+
+| 컬럼명         | 타입         | NULL 허용 | 설명      |
+| ----------- | ---------- | ------- | ------- |
+| `ITEM_ID`   | INTEGER    | ❌       | 아이템 ID  |
+| `ITEM_NAME` | VARCHAR(N) | ❌       | 아이템 이름  |
+| `RARITY`    | INTEGER    | ❌       | 아이템 희귀도 |
+| `PRICE`     | INTEGER    | ❌       | 아이템 가격  |
+
+### ITEM_TREE 테이블
+
+| 컬럼명              | 타입      | NULL 허용 | 설명        |
+| ---------------- | ------- | ------- | --------- |
+| `ITEM_ID`        | INTEGER | ❌       | 아이템 ID    |
+| `PARENT_ITEM_ID` | INTEGER | ⭕       | 부모 아이템 ID |
+
+## 문제
+
+아이템들은 `PARENT_ITEM_ID`를 기준으로 업그레이드 관계를 가지고 있습니다.
+
+더 이상 업그레이드할 수 없는 아이템의 `ITEM_ID`, `ITEM_NAME`, `RARITY`를 조회하고, 아이템 ID를 기준으로 내림차순 정렬합니다.
+
+* 더 이상 업그레이드할 수 없는 아이템은 다른 아이템의 `PARENT_ITEM_ID`로 등장하지 않는 아이템
+* `ITEM_ID`를 기준으로 아이템 정보를 조회
+* `ITEM_ID` 기준 내림차순 정렬
+
+### 핵심 로직
+
+* `ITEM_INFO`와 `ITEM_TREE`를 `ITEM_ID` 기준으로 조인하여 아이템의 이름과 희귀도 정보를 가져옴
+* 서브쿼리에서 `PARENT_ITEM_ID`가 `NULL`이 아닌 값만 조회
+* 다른 아이템의 `PARENT_ITEM_ID`로 등장하는 `ITEM_ID`를 제외
+* 결과적으로 **자식 아이템이 존재하지 않는 아이템**, 즉 더 이상 업그레이드할 수 없는 아이템만 남김
+* `ORDER BY I.ITEM_ID DESC`를 사용하여 아이템 ID 기준 내림차순 정렬
+
+### 서브쿼리 핵심
+
+```sql
+WHERE T.ITEM_ID NOT IN (
+    SELECT PARENT_ITEM_ID
+    FROM ITEM_TREE
+    WHERE PARENT_ITEM_ID IS NOT NULL
+)
+```
+
+서브쿼리는 **다른 아이템의 부모로 사용되고 있는 아이템 ID**를 찾는다.
+
+예를 들어:
+
+```text
+ITEM_A → ITEM_B → ITEM_C
+```
+
+라면 `ITEM_B`와 `ITEM_A`는 다른 아이템의 `PARENT_ITEM_ID`로 등장한다.
+
+반면 `ITEM_C`는 어떤 아이템의 부모도 아니므로 `PARENT_ITEM_ID` 목록에 등장하지 않는다.
+
+따라서 `NOT IN`을 사용하여 부모 아이템으로 등장하지 않는 아이템만 남기면 **더 이상 업그레이드할 수 없는 아이템**을 찾을 수 있다.
+
+`PARENT_ITEM_ID IS NOT NULL` 조건은 `NULL`을 `NOT IN` 대상에서 제외하기 위해 사용한다.
+
+### 풀이
+
+[31번 문제 풀이 보기](./solve/31_non_upgradeable_items.sql)
