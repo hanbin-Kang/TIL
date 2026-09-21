@@ -1574,3 +1574,110 @@ WHERE (I.FISH_TYPE, I.LENGTH) IN (
 ### 풀이
 
 [32번 문제 풀이 보기](./solve/32_longest_fish_by_type.sql)
+
+---
+---
+
+### [33. 분기별 대장균 개체 수 조회]
+
+### ECOLI_DATA 테이블
+
+| 컬럼명                    | 타입      | NULL 허용 | 설명        |
+| ---------------------- | ------- | ------- | --------- |
+| `ID`                   | INTEGER | ❌       | 대장균 개체 ID |
+| `PARENT_ID`            | INTEGER | ⭕       | 부모 개체 ID  |
+| `SIZE_OF_COLONY`       | INTEGER | ❌       | 개체의 크기    |
+| `DIFFERENTIATION_DATE` | DATE    | ❌       | 분화된 날짜    |
+| `GENOTYPE`             | INTEGER | ❌       | 개체의 형질    |
+
+## 문제
+
+`ECOLI_DATA` 테이블에서 분화된 날짜를 기준으로 **분기별 대장균 개체의 총 수**를 조회합니다.
+
+* 1~3월은 `1Q`
+* 4~6월은 `2Q`
+* 7~9월은 `3Q`
+* 10~12월은 `4Q`
+* 분기를 `QUARTER`로 출력
+* 대장균 개체 수를 `ECOLI_COUNT`로 출력
+* 분기 기준 오름차순 정렬
+
+### 핵심 로직
+
+* `EXTRACT(MONTH FROM DIFFERENTIATION_DATE)`로 분화 날짜에서 월을 추출
+* `CASE`를 사용하여 월을 `1Q`, `2Q`, `3Q`, `4Q`로 변환
+* 분기별로 `GROUP BY`하여 대장균 개체 수를 계산
+* `COUNT()`를 사용하여 각 분기에 속하는 대장균 개체 수를 집계
+* `ORDER BY QUARTER`로 분기 순서대로 정렬
+
+### CASE를 이용한 분기 구분
+
+```sql
+CASE
+    WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 1 AND 3 THEN '1Q'
+    WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 4 AND 6 THEN '2Q'
+    WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 7 AND 9 THEN '3Q'
+    ELSE '4Q'
+END AS QUARTER
+```
+
+`DIFFERENTIATION_DATE`에서 월을 추출한 뒤 `CASE`를 이용하여 해당 월이 속하는 분기를 결정한다.
+
+### CASE를 두 번 사용하는 방식
+
+처음에는 분기를 출력하는 `CASE`와 개체 수를 계산하는 `COUNT()` 내부의 `CASE`에서 동일한 분기 구분 로직을 반복할 수 있다.
+
+```sql
+SELECT CASE
+           WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 1 AND 3 THEN '1Q'
+           WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 4 AND 6 THEN '2Q'
+           WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 7 AND 9 THEN '3Q'
+           ELSE '4Q'
+       END AS QUARTER,
+       COUNT(CASE
+                 WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 1 AND 3 THEN '1Q'
+                 WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 4 AND 6 THEN '2Q'
+                 WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 7 AND 9 THEN '3Q'
+                 ELSE '4Q'
+             END) AS ECOLI_COUNT
+FROM ECOLI_DATA
+GROUP BY QUARTER
+ORDER BY QUARTER;
+```
+
+하지만 동일한 `CASE`문을 두 번 작성해야 하므로 중복이 발생한다.
+
+### WITH절을 이용한 CASE 재사용
+
+`WITH`절을 이용하면 분기를 먼저 계산한 결과에 `ECOLI_QUARTER`라는 이름을 붙이고, 이후 쿼리에서 재사용할 수 있다.
+
+```sql
+WITH ECOLI_QUARTER AS (
+    SELECT CASE
+               WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 1 AND 3 THEN '1Q'
+               WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 4 AND 6 THEN '2Q'
+               WHEN EXTRACT(MONTH FROM DIFFERENTIATION_DATE) BETWEEN 7 AND 9 THEN '3Q'
+               ELSE '4Q'
+           END AS QUARTER
+    FROM ECOLI_DATA
+)
+SELECT QUARTER,
+       COUNT(*) AS ECOLI_COUNT
+FROM ECOLI_QUARTER
+GROUP BY QUARTER
+ORDER BY QUARTER;
+```
+
+이 방식에서는 먼저 각 대장균의 분기를 계산하고, 바깥 쿼리에서 `COUNT(*)`로 분기별 개체 수를 계산한다.
+
+### 핵심 정리
+
+이번 문제의 핵심은 **날짜의 월을 분기 값으로 변환한 뒤 분기별로 집계하는 것**이다.
+
+`CASE`를 이용하면 월을 원하는 분기 값으로 변환할 수 있고, `WITH`절을 사용하면 계산한 분기 값을 별도로 만들어 이후 쿼리에서 재사용할 수 있다.
+
+이번 문제에서는 `WITH`절을 사용하여 **분기 계산을 한 번만 작성하고 `COUNT(*)`로 분기별 개체 수를 집계하는 방식**으로 중복을 줄였다.
+
+### 풀이
+
+[33번 문제 풀이 보기](./solve/33_ecoli_quarterly_count.sql)
