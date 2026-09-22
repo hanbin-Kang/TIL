@@ -1681,3 +1681,39 @@ ORDER BY QUARTER;
 ### 풀이
 
 [33번 문제 풀이 보기](./solve/33_ecoli_quarterly_count.sql)
+
+---
+---
+
+### [34. 연도별 대장균 크기 편차 조회]
+
+### ECOLI_DATA 테이블
+
+| 컬럼명                  | 타입      | NULL 허용 | 설명         |
+| -------------------- | ------- | ------- | ---------- |
+| ID                   | INTEGER | FALSE   | 대장균 개체의 ID |
+| PARENT_ID            | INTEGER | TRUE    | 부모 개체의 ID  |
+| SIZE_OF_COLONY       | INTEGER | FALSE   | 대장균 개체의 크기 |
+| DIFFERENTIATION_DATE | DATE    | FALSE   | 분화된 날짜     |
+| GENOTYPE             | INTEGER | FALSE   | 대장균의 형질    |
+
+## 문제
+
+분화된 연도별로 가장 큰 대장균의 크기와 각 대장균의 크기 차이를 계산한다.
+
+* `YEAR` : 분화된 연도
+* `YEAR_DEV` : 해당 연도의 최대 크기 - 각 대장균의 크기
+* `ID` : 대장균 개체의 ID
+* 연도 오름차순 정렬
+* 같은 연도에서는 크기 편차 오름차순 정렬
+
+### 핵심 로직
+
+1. `WITH`절에서 연도별 대장균의 최대 크기를 먼저 구한다.
+2. `EXTRACT(YEAR FROM DIFFERENTIATION_DATE)`로 분화 연도를 추출한다.
+3. `GROUP BY`를 이용해 연도별 `MAX(SIZE_OF_COLONY)`를 계산한다.
+4. 원본 `ECOLI_DATA`와 연도별 최대 크기를 `YEAR` 기준으로 조인한다.
+5. `MAX_SIZE - SIZE_OF_COLONY`로 각 대장균의 연도별 크기 편차를 계산한다.
+6. 연도와 편차를 각각 오름차순으로 정렬한다.
+
+[34번 문제 풀이 보기](./solve/34_ecoli_yearly_size_deviation.sql)
