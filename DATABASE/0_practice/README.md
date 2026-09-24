@@ -1717,3 +1717,44 @@ ORDER BY QUARTER;
 6. 연도와 편차를 각각 오름차순으로 정렬한다.
 
 [34번 문제 풀이 보기](./solve/34_ecoli_yearly_size_deviation.sql)
+
+---
+---
+
+### [35. 노선별 총 누계 거리와 평균 역 사이 거리 조회]
+
+### SUBWAY_DISTANCE 테이블
+
+| 컬럼명            | 타입           | NULL 허용 | 설명        |
+| -------------- | ------------ | ------- | --------- |
+| LINE           | VARCHAR(10)  | FALSE   | 호선        |
+| NO             | NUMBER       | FALSE   | 순번        |
+| ROUTE          | VARCHAR(50)  | FALSE   | 노선        |
+| STATION_NAME   | VARCHAR(100) | FALSE   | 역 이름      |
+| D_BETWEEN_DIST | NUMBER       | FALSE   | 역 사이 거리   |
+| D_CUMULATIVE   | NUMBER       | FALSE   | 노선별 누계 거리 |
+
+## 문제
+
+`SUBWAY_DISTANCE` 테이블에서 노선별로 다음 정보를 조회한다.
+
+* `ROUTE` : 노선
+* `TOTAL_DISTANCE` : 노선별 역 사이 거리의 총합
+* `AVERAGE_DISTANCE` : 노선별 평균 역 사이 거리
+
+총 누계 거리는 `D_BETWEEN_DIST`의 합으로 계산한다.
+
+* 총 누계 거리: 소수 첫째 자리까지 반올림 후 `km` 단위 표시
+* 평균 역 사이 거리: 소수 둘째 자리까지 반올림 후 `km` 단위 표시
+* 총 누계 거리를 기준으로 내림차순 정렬
+
+### 핵심 로직
+
+1. `ROUTE`를 기준으로 그룹화한다.
+2. `SUM(D_BETWEEN_DIST)`로 노선별 총 거리를 계산한다.
+3. `AVG(D_BETWEEN_DIST)`로 노선별 평균 역 사이 거리를 계산한다.
+4. `ROUND()`로 각각 원하는 소수 자릿수까지 반올림한다.
+5. `CONCAT()`으로 계산된 값 뒤에 `km` 단위를 붙인다.
+6. 정렬에서는 `km`가 붙기 전의 숫자값을 사용하여 총 거리가 큰 노선부터 정렬한다.
+
+[35번 문제 풀이 보기](./solve/35_subway_route_distance_summary.sql)
