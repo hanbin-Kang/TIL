@@ -1758,3 +1758,41 @@ ORDER BY QUARTER;
 6. 정렬에서는 `km`가 붙기 전의 숫자값을 사용하여 총 거리가 큰 노선부터 정렬한다.
 
 [35번 문제 풀이 보기](./solve/35_subway_route_distance_summary.sql)
+
+---
+---
+
+### [36. 대장균 개체별 자식 수 조회]
+
+### ECOLI_DATA 테이블
+
+| 컬럼명                  | 타입      | NULL 허용 | 설명         |
+| -------------------- | ------- | ------- | ---------- |
+| ID                   | INTEGER | FALSE   | 대장균 개체의 ID |
+| PARENT_ID            | INTEGER | TRUE    | 부모 개체의 ID  |
+| SIZE_OF_COLONY       | INTEGER | FALSE   | 대장균 개체의 크기 |
+| DIFFERENTIATION_DATE | DATE    | FALSE   | 분화된 날짜     |
+| GENOTYPE             | INTEGER | FALSE   | 대장균의 형질    |
+
+## 문제
+
+각 대장균 개체의 ID와 자식 개체의 수를 조회한다.
+
+* 자식이 없는 경우 `0` 출력
+* ID 오름차순 정렬
+
+### 핵심 로직
+
+`PARENT_ID`별로 자식 개체의 수를 먼저 구한 뒤, `PARENT_ID`와 부모 개체의 `ID`를 연결한다.
+
+* `GROUP BY PARENT_ID` : 부모별 자식 수 계산
+* `RIGHT JOIN` : 자식이 없는 부모도 전체 개체 목록에 포함하기 위해 사용
+* `IFNULL(P.CHILD_COUNT, 0)` : 자식이 없는 경우 `NULL`이 되므로 `0`으로 변환
+* `ORDER BY E.ID ASC` : ID 기준 오름차순 정렬
+
+### 풀이
+
+부모별 자식 수를 별도로 집계한 뒤 전체 대장균과 조인한다.
+자식이 없는 개체는 집계 결과가 존재하지 않기 때문에 `RIGHT JOIN`으로 포함시키고, 발생하는 `NULL`을 `IFNULL()`로 `0`으로 변경한다.
+
+[36번 문제 풀이 보기](./solve/36_ecoli_child_count.sql)
