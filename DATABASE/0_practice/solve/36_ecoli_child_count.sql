@@ -1,0 +1,20 @@
+-- 각 개체별 자식의 수를 구하는 문제, 자식이 없다면 0
+
+-- 자식 : PARENT_ID가 자신인 것
+
+-- SELECT PARENT_ID, COUNT(*) AS CHILD_COUNT
+-- FROM ECOLI_DATA
+-- WHERE PARENT_ID IN (SELECT ID 
+--                     FROM ECOLI_DATA)
+-- GROUP BY PARENT_ID
+
+WITH PPARENT_TABLE AS (SELECT PARENT_ID, COUNT(*) AS CHILD_COUNT
+                       FROM ECOLI_DATA
+                       WHERE PARENT_ID IN (SELECT ID 
+                                           FROM ECOLI_DATA)
+                       GROUP BY PARENT_ID)
+SELECT E.ID, IFNULL(P.CHILD_COUNT, 0)
+FROM PPARENT_TABLE P RIGHT JOIN ECOLI_DATA E
+ON P.PARENT_ID = E.ID
+
+-- PPARENT_TABLE의 PARENT_ID = ECOLI_DATA의 ID
